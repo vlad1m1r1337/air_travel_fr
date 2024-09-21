@@ -1,6 +1,7 @@
 import {Sort} from "./Sort.tsx";
 import {FilterByTransfer} from "./FilterByTransfer.tsx";
 import {FilterByPrice} from "./FilterByPrice.tsx";
+import {FilterByCompany} from "./FilterByCompany.tsx";
 
 export const SortFilter = () => {
     return (
@@ -10,15 +11,7 @@ export const SortFilter = () => {
                 <Sort />
                 <FilterByTransfer />
                 <FilterByPrice />
-                <h2 className="py-3 font-medium">Авиакомпании</h2>
-                <label className="flex">
-                    <input type="checkbox"/>
-                    Aeroflot
-                </label>
-                <label className="flex">
-                    <input type="checkbox"/>
-                    S7
-                </label>
+                <FilterByCompany />
             </div>
             <div className="w-full h-28 bg-gray-300"/>
         </div>

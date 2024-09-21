@@ -1,34 +1,57 @@
 import mock from "./server/flights.json";
 import {formatDate, formatDuration} from "./utils";
 import {SortFilter} from "./components/SortFilter.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Clock4, MoveRight} from 'lucide-react';
-import {useFilterPriceStore, useSortStore} from "./store/useSortStore.ts";
+import {useCompanyStore, useFilterPriceStore, useSortStore} from "./store/useSortStore.ts";
 import {useFilterStore} from "./store/useSortStore.ts";
 import {sortFlightsByPrice} from "./ranging/sorting.ts";
 import {filterFlightsByTransfer} from "./ranging/filter_transfer.ts";
 import {filterFlightsByPrice} from "./ranging/filter_price.ts";
-
+import { useMemo } from "react";
+import {nanoid} from "nanoid";
 
 function App() {
-    const obj = mock.result.flights;
-    const [flightsEnd, setFlightsEnd] = useState(30);
+    const obj = (mock as any).result.flights;
+    const [flightsEnd, setFlightsEnd] = useState(2);
     const { sortBy } = useSortStore();
     const { transferType } = useFilterStore();
     const { minPrice, maxPrice } = useFilterPriceStore();
-    // console.log(obj)
-    console.log(minPrice, maxPrice)
+    const { setCompanies } = useCompanyStore();
+    const {activeCompany} = useCompanyStore();
+
+    console.log('activeCompany', activeCompany);
+    // console.log(obj);
+    // console.log(minPrice, maxPrice);
+    const displayedFlights = useMemo(() => {
+        return obj
+            .sort((a: any, b: any) => sortFlightsByPrice(a, b, sortBy))
+            .filter((flight: any) => filterFlightsByTransfer([flight.flight], transferType)[0])
+            .filter((flight: any) => filterFlightsByPrice([flight.flight], minPrice, maxPrice)[0])
+            .slice(0, flightsEnd)
+            .filter(function (flight: any) {
+                console.log('name', activeCompany);
+                return !activeCompany || flight.flight.carrier.caption === activeCompany.name
+            })
+    }, [obj, sortBy, transferType, minPrice, maxPrice, flightsEnd, activeCompany]);
+
+    console.log("displayedFlights", displayedFlights[0].flight.carrier.caption);
+    useEffect(() => {
+        const obj = displayedFlights.map((flight: any) => ({
+            name: flight.flight.legs[0].segments[0].airline.caption,
+            price: parseInt(flight.flight.price.passengerPrices[0].singlePassengerTotal.amount, 10),
+            id: nanoid(),
+            active: false,
+        }));
+
+        setCompanies(obj);
+    }, [displayedFlights, setCompanies]);
     return (
         <>
             <div className="flex flex-row">
                 <SortFilter />
                 <div className="flex flex-col w-full p-4">
-                    {obj
-                        .sort((a, b) => sortFlightsByPrice(a, b, sortBy))
-                        .filter((flight: any) => filterFlightsByTransfer([flight.flight], transferType)[0])
-                        .filter((flight: any) => filterFlightsByPrice([flight.flight], minPrice, maxPrice)[0])
-                        // .slice(0, flightsEnd)
-                        .map((flight: any) => {
+                    {displayedFlights.map((flight: any) => {
                         return (
                             <div key={flight.flightToken}>
                                 <div className="flex flex-col items-end bg-sky-600 w-full p-4">
@@ -43,7 +66,6 @@ function App() {
 
                                     return (
                                         <div key={legIndex} className="flex flex-col p-4">
-                                            <h2 className="text-cyan-500">Этап {legIndex + 1}</h2>
                                                 <div className="flex flex-col">
                                                     <div className="flex gap-2 ml-3">
                                                         <p>{firstSegment.departureCity?.caption}, {firstSegment.departureAirport.caption} <span className="text-sky-400">({firstSegment.departureAirport.uid})</span></p>

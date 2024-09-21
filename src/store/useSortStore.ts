@@ -33,3 +33,33 @@ export const useFilterPriceStore = create<FilterPriceState>((set) => ({
     setMinPrice: (minPrice) => set({ minPrice }),
     setMaxPrice: (maxPrice) => set({ maxPrice }),
 }));
+
+export interface Company {
+    name: string;
+    price: number;
+    id: string;
+    active: boolean;
+}
+
+interface CompanyStoreState {
+    activeCompany: Company | null;
+    companies: Company[];
+    setCompanies: (company: Company[]) => void;
+    setActiveCompany: (company: Company) => void;
+}
+
+export const useCompanyStore = create<CompanyStoreState>((set) => ({
+    activeCompany: null,
+    companies: [],
+    setCompanies: (companies) => set({ companies }),
+    setActiveCompany: (company) => set((state) => {
+        const isActive = state.activeCompany?.id === company.id;
+        return {
+            companies: state.companies.map((c) => ({
+                ...c,
+                active: c.id === company.id ? !c.active : c.active,
+            })),
+            activeCompany: isActive ? null : company,
+        };
+    }),
+}));
