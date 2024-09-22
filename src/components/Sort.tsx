@@ -10,28 +10,31 @@ export const Sort = () => {
                 <input
                     type="radio"
                     name="sort"
+                    className="mr-2"
                     checked={sortBy === 'asc'}
                     onChange={() => setSortBy('asc')}
                 />
-                По возрастанию цены
+               - по возрастанию цены
             </label>
             <label className="flex">
                 <input
                     type="radio"
                     name="sort"
+                    className="mr-2"
                     checked={sortBy === 'desc'}
                     onChange={() => setSortBy('desc')}
                 />
-                По убыванию цены
+                - по убыванию цены
             </label>
             <label className="flex">
                 <input
                     type="radio"
                     name="sort"
+                    className="mr-2"
                     checked={sortBy === 'duration'}
                     onChange={() => setSortBy('duration')}
                 />
-                По времени в пути
+                - по времени в пути
             </label>
         </>
     )

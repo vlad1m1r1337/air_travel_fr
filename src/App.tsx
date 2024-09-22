@@ -17,7 +17,7 @@ function App() {
     const { sortBy } = useSortStore();
     const { transferType } = useFilterStore();
     const { minPrice, maxPrice } = useFilterPriceStore();
-    const { setCompanies } = useCompanyStore();
+    const { companies, setCompanies } = useCompanyStore();
     const {activeCompany} = useCompanyStore();
 
     const displayedFlights = useMemo(() => {
@@ -28,9 +28,8 @@ function App() {
             .slice(0, flightsEnd)
 
     }, [obj, sortBy, transferType, minPrice, maxPrice, flightsEnd, activeCompany]);
-    console.log('displayedFlights', displayedFlights);
+
     useEffect(() => {
-        console.log('activeCompany', activeCompany)
         const obj = displayedFlights.map((flight: any) => ({
             name: flight.flight.carrier.caption,
             price: parseInt(flight.flight.price.total.amount, 10),
@@ -39,13 +38,13 @@ function App() {
         }));
         setCompanies(obj);
     }, [displayedFlights, setCompanies, activeCompany]);
-
+    console.log(companies)
     return (
         <>
             <div className="flex flex-row">
                 <SortFilter />
                 <div className="flex flex-col w-full p-4">
-                    {displayedFlights.filter((flight: any) => !activeCompany || flight.flight.carrier.caption === activeCompany.name).map((flight: any) => {
+                    {displayedFlights.filter((flight: any) => !activeCompany || flight.flight.carrier.caption === activeCompany.name && activeCompany?.price === Number(flight.flight.price.total.amount)).map((flight: any) => {
                         return (
                             <div key={flight.flightToken}>
                                 <div className="flex flex-col items-end bg-sky-600 w-full p-4">
@@ -79,9 +78,9 @@ function App() {
                                                             {arrivalTime} <span className="text-sky-400">{arrivalDay} {arrivalMonth} {arrivalWeekday}</span>
                                                         </time>
                                                     </div>
-                                                    <div className="flex items-center">
+                                                    <div className="flex items-center m-2">
                                                         <hr className="flex-grow border-t border-gray-300 ml-7"/>
-                                                        { leg.segments.length !== 1 && <p className="text-orange-500 mx-2">{`${leg.segments.length - 1} пересадка`}</p>}
+                                                        { leg.segments.length !== 1 && <p className="text-orange-500">{`${leg.segments.length - 1} пересадка`}</p>}
                                                         <hr className="flex-grow border-t border-gray-300 mr-7"/>
                                                     </div>
                                                     <p>{`Рейс выполняет: ${firstSegment.airline.caption}`}</p>

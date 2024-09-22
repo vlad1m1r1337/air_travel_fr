@@ -2,7 +2,7 @@ import { useCompanyStore } from "../store/useSortStore.ts";
 
 export const FilterByCompany = () => {
     const { companies, setActiveCompany } = useCompanyStore();
-    console.log('companies', companies);
+
     return (
         <div className="mt-5">
             <h2 className="py-3 font-medium">Авиакомпании</h2>

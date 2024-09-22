@@ -9,18 +9,20 @@ export const FilterByTransfer = () => {
             <label className="flex">
                 <input
                     type="checkbox"
+                    className="mr-2"
                     checked={transferType === 'direct'}
                     onChange={() => setTransferType(transferType === 'direct' ? '' : 'direct')}
                 />
-                Без пересадок
+                - без пересадок
             </label>
             <label className="flex">
                 <input
                     type="checkbox"
+                    className="mr-2"
                     checked={transferType === 'one-stop'}
                     onChange={() => setTransferType(transferType === 'one-stop' ? '' : 'one-stop')}
                 />
-                1 пересадка
+                - 1 пересадка
             </label>
         </>
     )
