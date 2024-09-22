@@ -5,6 +5,7 @@ export const FilterByCompany = () => {
     console.log('companies', companies);
     return (
         <div className="mt-5">
+            <h2 className="py-3 font-medium">Авиакомпании</h2>
             {companies.length && companies.map((company) => (
                 <label className="flex " key={company.id}>
                     <input
@@ -13,7 +14,8 @@ export const FilterByCompany = () => {
                         onChange={() => setActiveCompany(company)}
                     />
                     <div className="flex justify-between w-full ">
-                        <span className="pl-2">{company.name.length > 14 ? company.name.slice(0, 14) + '...' : company.name}</span>
+                        <span
+                            className="pl-2">{company.name.length > 14 ? company.name.slice(0, 14) + '...' : company.name}</span>
                         <span> от {company.price} р.</span>
                     </div>
                 </label>

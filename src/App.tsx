@@ -17,41 +17,35 @@ function App() {
     const { sortBy } = useSortStore();
     const { transferType } = useFilterStore();
     const { minPrice, maxPrice } = useFilterPriceStore();
-    const { setCompanies } = useCompanyStore();
+    const { companies, setCompanies } = useCompanyStore();
     const {activeCompany} = useCompanyStore();
 
-    console.log('activeCompany', activeCompany);
-    // console.log(obj);
-    // console.log(minPrice, maxPrice);
     const displayedFlights = useMemo(() => {
         return obj
             .sort((a: any, b: any) => sortFlightsByPrice(a, b, sortBy))
             .filter((flight: any) => filterFlightsByTransfer([flight.flight], transferType)[0])
             .filter((flight: any) => filterFlightsByPrice([flight.flight], minPrice, maxPrice)[0])
             .slice(0, flightsEnd)
-            .filter(function (flight: any) {
-                console.log('name', activeCompany);
-                return !activeCompany || flight.flight.carrier.caption === activeCompany.name
-            })
+
     }, [obj, sortBy, transferType, minPrice, maxPrice, flightsEnd, activeCompany]);
-
-    console.log("displayedFlights", displayedFlights[0].flight.carrier.caption);
+    console.log('displayedFlights', displayedFlights);
     useEffect(() => {
+        console.log('activeCompany', activeCompany)
         const obj = displayedFlights.map((flight: any) => ({
-            name: flight.flight.legs[0].segments[0].airline.caption,
-            price: parseInt(flight.flight.price.passengerPrices[0].singlePassengerTotal.amount, 10),
+            name: flight.flight.carrier.caption,
+            price: parseInt(flight.flight.price.total.amount, 10),
             id: nanoid(),
-            active: false,
+            active: ((activeCompany?.name === flight.flight.carrier.caption && activeCompany?.price === Number(flight.flight.price.total.amount))) || false,
         }));
-
         setCompanies(obj);
-    }, [displayedFlights, setCompanies]);
+    }, [displayedFlights, setCompanies, activeCompany]);
+
     return (
         <>
             <div className="flex flex-row">
                 <SortFilter />
                 <div className="flex flex-col w-full p-4">
-                    {displayedFlights.map((flight: any) => {
+                    {displayedFlights.filter((flight: any) => !activeCompany || flight.flight.carrier.caption === activeCompany.name).map((flight: any) => {
                         return (
                             <div key={flight.flightToken}>
                                 <div className="flex flex-col items-end bg-sky-600 w-full p-4">
@@ -100,7 +94,7 @@ function App() {
                             </div>
                         )
                     })}
-                    <button onClick={() => setFlightsEnd((prev) => prev + 1)} className="self-center border-2 border-black bg-black bg-opacity-5 mb-6 w-[200px] hover:bg-opacity-10 active:bg-opacity-15 ">Показать ещё</button>
+                    <button onClick={() => setFlightsEnd((prev) => prev + 1)} className="self-center border-2 border-black bg-black bg-opacity-5 mb-6 w-[200px] hover:bg-opacity-10 active:bg-opacity-15 disabled:opacity-25" disabled={!!activeCompany}>Показать ещё</button>
                 </div>
             </div>
         </>

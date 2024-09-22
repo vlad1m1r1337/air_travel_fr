@@ -53,13 +53,12 @@ export const useCompanyStore = create<CompanyStoreState>((set) => ({
     companies: [],
     setCompanies: (companies) => set({ companies }),
     setActiveCompany: (company) => set((state) => {
-        const isActive = state.activeCompany?.id === company.id;
+        const isActive = state.activeCompany?.name === company.name && state.activeCompany?.price === company.price;
         return {
             companies: state.companies.map((c) => ({
                 ...c,
-                active: c.id === company.id ? !c.active : c.active,
             })),
-            activeCompany: isActive ? null : company,
+            activeCompany: isActive ? null : { ...company, active: !isActive },
         };
     }),
 }));

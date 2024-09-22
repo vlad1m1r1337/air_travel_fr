@@ -782,3 +782,7 @@ video {
 .active\:bg-opacity-15:active {
   --tw-bg-opacity: 0.15;
 }
+
+.disabled\:opacity-25:disabled {
+  opacity: 0.25;
+}
