@@ -17,7 +17,7 @@ function App() {
     const { sortBy } = useSortStore();
     const { transferType } = useFilterStore();
     const { minPrice, maxPrice } = useFilterPriceStore();
-    const { companies, setCompanies } = useCompanyStore();
+    const { setCompanies } = useCompanyStore();
     const {activeCompany} = useCompanyStore();
 
     const displayedFlights = useMemo(() => {
