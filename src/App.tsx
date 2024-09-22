@@ -38,7 +38,6 @@ function App() {
         }));
         setCompanies(obj);
     }, [displayedFlights, setCompanies, activeCompany]);
-    console.log(companies)
     return (
         <>
             <div className="flex flex-row">
